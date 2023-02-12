@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import styled from '@emotion/styled';
 import axios from 'axios';
 import { SIGN_URL } from '../common/apiUrl';
@@ -11,37 +11,71 @@ const Todo = () => {
 	const [textInput, setTextInput] = useState('');
 	const [addList, setAddList] = useState([]);
 	const accessToken = localStorage.getItem('access_token');
-	const handleAddList = useCallback(
-		async (e) => {
-			e.preventDefault();
-			try {
-				const response = await axios.post(`${SIGN_URL}/todos`, addList, {
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-						'Content-Type': 'application/json',
-					},
-				});
-				setAddList(...addList, textInput);
-			} catch {
-				console.log('todo 통신 error');
-			}
 
-			// setTextInput('');
-		},
-		[setAddList],
+	const createTodo = async () => {
+		try {
+			const response = await axios.post(`${SIGN_URL}/todos`, addList,{
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+					'Content-Type': 'application/json',
+				}
+			}).then((response) => console.log('response', response));
+			if (response.status === 201) {
+				console.log('데이떠 만들었다');
+				// console.log('response', JSON.parse(response));
+			}
+		} catch {
+			console.log('통신 error');
+		}
+	}
+	const handleChangeTextInput = useCallback((e) => {
+		setTextInput(e.target.value);
+	},[setTextInput])
+
+	const handleAddList = useCallback((e) => {
+			e.preventDefault();
+			setAddList([...addList, {
+				todo: e.target.value,
+			}]);
+			setTextInput('');
+		},[setAddList]
 	);
 
+	const getTodo = async () => {
+		try {
+			const response = await axios.get(`${SIGN_URL}/todos`,{
+				headers: {
+					Authorization: `Bearer ${accessToken}`
+				}
+			}).then((response) => console.log('response', response));
+			if (response.status === 200) {
+				console.log('받아왔다 데이떠');
+				// console.log('response', JSON.parse(response));
+			}
+		} catch {
+			console.log('통신 error');
+		}
+	}
+		//
+		// useEffect(() => {
+		// 	getTodo();
+		// }, []);
+
 	console.log('addList', addList);
+	console.log('textInput', textInput);
+
 	return (
 		<TodoStyle>
 			<form>
 				<input
 					data-testid="new-todo-input"
 					placeholder={'to-do'}
-					onChange={(e) => setTextInput(e.target.value)}
+					onChange={handleChangeTextInput}
 					value={textInput}
 				/>
-				<button onClick={handleAddList} data-testid="new-todo-add-button">
+				<button
+					onClick={handleAddList}
+					data-testid="new-todo-add-button">
 					추가
 				</button>
 			</form>
@@ -52,6 +86,8 @@ const Todo = () => {
 	);
 };
 
-const TodoStyle = styled.div``;
+const TodoStyle = styled.div`
+	display: flex;
+`;
 
 export default Todo;
