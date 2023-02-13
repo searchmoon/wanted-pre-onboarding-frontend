@@ -4,9 +4,9 @@ import styled from '@emotion/styled';
 /**
  *
  */
-const PlainBtn = ({ title, disabled }) => {
+const PlainBtn = ({ title, disabled, onClick }) => {
 	return (
-		<PlainBtnStyle disabled={disabled}>
+		<PlainBtnStyle disabled={disabled} onClick={onClick}>
 			{title}
 		</PlainBtnStyle>
 	);

@@ -18,8 +18,6 @@ const SignIn = () => {
 	const isValidEmail = email.includes('@');
 	const isValidPassword = password.length >= 8;
 
-
-
 	useEffect(() => {
 		if (localStorage.getItem('access_token')) {
 			navigate('/todo');
@@ -37,9 +35,7 @@ const SignIn = () => {
 						'Content-Type': 'application/json',
 					},
 				});
-
 				console.log('response :' , response);
-
 				if (response.data.access_token) {
 					localStorage.setItem('access_token', response.data.access_token);
 				}

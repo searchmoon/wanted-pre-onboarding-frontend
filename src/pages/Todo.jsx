@@ -1,45 +1,21 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styled from '@emotion/styled';
 import axios from 'axios';
 import { SIGN_URL } from '../common/apiUrl';
-// import TodoList from '../components/TodoList';
+import TodoList from '../components/TodoList';
 
 /**
  *
  */
 const Todo = () => {
 	const [textInput, setTextInput] = useState('');
-	const [addList, setAddList] = useState([]);
+	const [dataList, setDataList] = useState([]);
 	const accessToken = localStorage.getItem('access_token');
 
-	const createTodo = async () => {
-		try {
-			const response = await axios.post(`${SIGN_URL}/todos`, addList,{
-				headers: {
-					Authorization: `Bearer ${accessToken}`,
-					'Content-Type': 'application/json',
-				}
-			}).then((response) => console.log('response', response));
-			if (response.status === 201) {
-				console.log('데이떠 만들었다');
-				// console.log('response', JSON.parse(response));
-			}
-		} catch {
-			console.log('통신 error');
-		}
-	}
 	const handleChangeTextInput = useCallback((e) => {
 		setTextInput(e.target.value);
 	},[setTextInput])
 
-	const handleAddList = useCallback((e) => {
-			e.preventDefault();
-			setAddList([...addList, {
-				todo: e.target.value,
-			}]);
-			setTextInput('');
-		},[setAddList]
-	);
 
 	const getTodo = async () => {
 		try {
@@ -47,21 +23,53 @@ const Todo = () => {
 				headers: {
 					Authorization: `Bearer ${accessToken}`
 				}
-			}).then((response) => console.log('response', response));
+			}).then((response) => setDataList(response.data));
 			if (response.status === 200) {
 				console.log('받아왔다 데이떠');
-				// console.log('response', JSON.parse(response));
 			}
 		} catch {
-			console.log('통신 error');
+			console.log('getTodo 통신 error');
 		}
 	}
-		//
-		// useEffect(() => {
-		// 	getTodo();
-		// }, []);
+	console.log('dataList', dataList);
 
-	console.log('addList', addList);
+	useEffect(() => {
+		getTodo();
+	// }, [setDataList]);
+}, []);
+
+	//createTodo ( todo list 추가하기 )
+	const handleAddList = useCallback(async (e) => {
+			e.preventDefault();
+		try {
+			const response = await axios.post(`${SIGN_URL}/todos`, {
+				todo: textInput
+			},{
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+					'Content-Type': 'application/json',
+				}
+			})
+			console.log('res', response);
+
+			setDataList([
+				...dataList,
+				response.data,
+			]);
+			setTextInput('');
+
+			if (response.status === 201) {
+				console.log('데이떠 만들었다');
+			}
+			return response;
+			console.log('responnnn', response);
+
+		} catch {
+			console.log('createTodo 통신 error');
+		}
+	},[setDataList, textInput]);
+
+	console.log('dataList', dataList);
 	console.log('textInput', textInput);
 
 	return (
@@ -75,13 +83,16 @@ const Todo = () => {
 				/>
 				<button
 					onClick={handleAddList}
-					data-testid="new-todo-add-button">
+					data-testid="new-todo-add-button"
+				>
 					추가
 				</button>
 			</form>
-			{/*{addList.map((item) => (*/}
-			{/*	<TodoList item={item} key={item.id} />*/}
-			{/*))}*/}
+			{dataList.map((item) => (
+				<ul>
+					<TodoList item={item} key={item.id} setDataList={setDataList} dataList={dataList}/>
+				</ul>
+			))}
 		</TodoStyle>
 	);
 };
