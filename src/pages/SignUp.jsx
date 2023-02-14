@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
 import PlainBtn from '../components/PlainBtn';
@@ -12,13 +12,7 @@ import { SIGN_URL } from '../common/apiUrl';
  */
 const SignUp = () => {
 	const navigate = useNavigate();
-	const [form, handleChange] = useFormData();
-
-
-	const { email, password } = form;
-	const isValidEmail = email.includes('@');
-	const isValidPassword = password.length >= 8;
-
+	const [form, handleChange, isValid] = useFormData();
 
 	useEffect(() => {
 		if (localStorage.getItem('access_token')) {
@@ -55,7 +49,7 @@ const SignUp = () => {
 					type={'email'}
 					placeholder={'email'}
 					onChange={handleChange}
-					value={email}
+					value={form.email}
 					className={'basic-input'}
 				/>
 				<label htmlFor={'password'}>비밀번호</label>
@@ -65,14 +59,14 @@ const SignUp = () => {
 					type={'password'}
 					placeholder={'password'}
 					onChange={handleChange}
-					value={password}
+					value={form.password}
 					minLength={8}
 					className={'basic-input'}
 				/>
 				<PlainBtn
 					onClick={handleDoneSignUp}
 					title={'회원가입 완료'}
-					disabled={!(isValidEmail && isValidPassword)}
+					disabled={!isValid}
 				/>
 			</form>
 		</SignUpStyle>

@@ -7,16 +7,13 @@ import { useFormData } from '../hooks/useFormData';
 import { SIGN_URL } from '../common/apiUrl';
 
 /**
- * 1,2,3,4
+ *
  */
 const SignIn = () => {
 	const navigate = useNavigate();
 
-	const [form, setForm, handleChange] = useFormData();
+	const [form, handleChange, isValid] = useFormData();
 
-	const { email, password } = form;
-	const isValidEmail = email.includes('@');
-	const isValidPassword = password.length >= 8;
 
 	useEffect(() => {
 		if (localStorage.getItem('access_token')) {
@@ -62,7 +59,7 @@ const SignIn = () => {
 					data-testid="email-input"
 					placeholder={'email'}
 					onChange={handleChange}
-					value={email}
+					value={form.email}
 					className={'basic-input'}
 				/>
 				<label htmlFor={'password'}>비밀번호</label>
@@ -73,7 +70,7 @@ const SignIn = () => {
 					data-testid={'password-input'}
 					placeholder={'password'}
 					onChange={handleChange}
-					value={password}
+					value={form.password}
 					minLength={8}
 					className={'basic-input'}
 				/>
@@ -83,7 +80,7 @@ const SignIn = () => {
 						onClick={handleDoneSignIn}
 						title={'로그인'}
 						type={'button'}
-						disabled={!(isValidEmail && isValidPassword)}
+						disabled={!isValid}
 					/>
 				</div>
 				<Link

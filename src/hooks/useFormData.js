@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 
 
 /**
@@ -25,5 +25,12 @@ export const useFormData = () => {
 		[form],
 	);
 
-	return [form, setForm, handleChange];
+
+	const isValid = useMemo(()=>{
+		const isValidEmail = form.email.includes('@');
+		const isValidPassword = form.password.length >= 8;
+		return (isValidEmail && isValidPassword)
+	}, [form.email, form.password]);
+
+	return [form, handleChange, isValid];
 };
