@@ -10,7 +10,7 @@ import { SIGN_URL } from '../common/apiUrl';
  * 1,2,3,4
  */
 const SignIn = () => {
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 
 	const [form, setForm, handleChange] = useFormData();
 
@@ -41,6 +41,7 @@ const SignIn = () => {
 				}
 				if (response.status === 200) {
 					navigate('/todo');
+					console.log('로그인이 완료되었습니다.')
 				}
 			} catch {
 				console.log('통신 error');
@@ -51,7 +52,7 @@ const SignIn = () => {
 
 	return (
 		<SignInStyle>
-			<p>로그인 하기??</p>
+			<p>로그인 페이지</p>
 			<form className={'form'}>
 				<label htmlFor={'email'}>이메일</label>
 				<input
@@ -62,6 +63,7 @@ const SignIn = () => {
 					placeholder={'email'}
 					onChange={handleChange}
 					value={email}
+					className={''}
 				/>
 				<label htmlFor={'password'}>비밀번호</label>
 				<input
@@ -98,6 +100,8 @@ const SignIn = () => {
 const SignInStyle = styled.div`
 	display: flex;
 	flex-direction: column;
+	align-items: center;
+	margin-top: 100px;
 	.form {
 		display: flex;
 		flex-direction: column;

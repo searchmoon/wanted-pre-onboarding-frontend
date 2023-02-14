@@ -5,6 +5,7 @@ import PlainBtn from '../components/PlainBtn';
 import axios from 'axios';
 import { useFormData } from '../hooks/useFormData';
 import { SIGN_URL } from '../common/apiUrl';
+import {centralAxiosPost} from "../utils/network";
 
 /**
  *
@@ -31,7 +32,7 @@ const SignUp = () => {
 			e.preventDefault();
 			try {
 				const response = await axios.post(`${SIGN_URL}/auth/signup`, form, {
-					headers: { 'Content-Type': 'application/json' },
+					headers: {'Content-Type': 'application/json'},
 				});
 				console.log('res', response);
 				if (response.status === 201) {
@@ -41,9 +42,9 @@ const SignUp = () => {
 			} catch {
 				console.log('통신 error');
 			}
-		},
-		[form],
-	);
+		}
+		, [form]);
+
 	return (
 		<SignUpStyle>
 			<p>회원가입 페이지</p>

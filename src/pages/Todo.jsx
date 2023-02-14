@@ -17,26 +17,27 @@ const Todo = () => {
 	},[setTextInput])
 
 
-	const getTodo = async () => {
+	const getTodo = useCallback(async () => {
 		try {
 			const response = await axios.get(`${SIGN_URL}/todos`,{
 				headers: {
 					Authorization: `Bearer ${accessToken}`
 				}
-			}).then((response) => setDataList(response.data));
+			});
+				// .then((response) => setDataList(response.data));
 			if (response.status === 200) {
+				setDataList(response.data);
 				console.log('받아왔다 데이떠');
 			}
 		} catch {
 			console.log('getTodo 통신 error');
 		}
-	}
-	console.log('dataList', dataList);
+	}, []);
+
 
 	useEffect(() => {
 		getTodo();
-	// }, [setDataList]);
-}, []);
+	}, []);
 
 	//createTodo ( todo list 추가하기 )
 	const handleAddList = useCallback(async (e) => {
@@ -49,8 +50,8 @@ const Todo = () => {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',
 				}
-			})
-			console.log('res', response);
+			});
+			console.log('dataList :', dataList);
 
 			setDataList([
 				...dataList,
@@ -61,17 +62,10 @@ const Todo = () => {
 			if (response.status === 201) {
 				console.log('데이떠 만들었다');
 			}
-			return response;
-			console.log('responnnn', response);
-
 		} catch {
 			console.log('createTodo 통신 error');
 		}
 	},[setDataList, textInput]);
-
-	console.log('dataList', dataList);
-	console.log('textInput', textInput);
-
 	return (
 		<TodoStyle>
 			<form>
@@ -88,6 +82,7 @@ const Todo = () => {
 					추가
 				</button>
 			</form>
+			<hr />
 			{dataList.map((item) => (
 				<ul>
 					<TodoList item={item} key={item.id} setDataList={setDataList} dataList={dataList}/>
@@ -99,6 +94,7 @@ const Todo = () => {
 
 const TodoStyle = styled.div`
 	display: flex;
+	flex-direction: column;
 `;
 
 export default Todo;

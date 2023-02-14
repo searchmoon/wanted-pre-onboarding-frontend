@@ -21,9 +21,6 @@ const TodoList = ({ item, setDataList, dataList }) => {
 	}, []);
 
 	const handleDoneEdit = useCallback(async(e) => {
-		console.log('item.id', item.id);
-		console.log('item.todo', item.todo);
-		console.log('item', item);
 		try {
 			const response = await axios.put(`${SIGN_URL}/todos/${item.id}`, {
 					todo: todoText,
@@ -56,6 +53,7 @@ const TodoList = ({ item, setDataList, dataList }) => {
 				}).then((response) => console.log('response', response));
 			if (response.status === 204) {
 				console.log('데이터 삭제완료');
+				alert('todo가 삭제 되었습니다.');
 			}
 		} catch {
 			console.log('데이터 delete error');
@@ -63,43 +61,61 @@ const TodoList = ({ item, setDataList, dataList }) => {
 		console.log('dataList', dataList);
 		}, [setDataList]);
 
-	useEffect(() => {
-	}, [dataList])
+	const handleCancelEdit = useCallback(() => {
+		setIsEditing(!isEditing)
+	}, [setDataList]);
+
+	// useEffect(() => {
+	// 	handleCalcelEdit();
+	// }, [])
 
 	return (
 		<TodoListStyle>
 			<label>
-				<input type="checkbox" />
-				{isEditing ? (
-					<input
-						onChange={handleChangeText}
-						value={todoText}
-					/>
-				) : (
-					<span>{todoText}</span>
-				)}
-
-				{isEditing ? (
-					<button onClick={handleDoneEdit}>제출</button>
-				) : (
-					<button onClick={handleActiveEdit} data-testid="modify-button">
-						수정
-					</button>
-				)}
-				{isEditing ? (
-					<button onClick={() => setIsEditing(!isEditing)}>취소</button>
-				) : (
-					<button data-testid="delete-button" onClick={handleDeleteList}>삭제</button>
-				)}
-
-
+				<div className="wrap-todo">
+					<div className={'todo-list'}>
+						<input type="checkbox" />
+						{isEditing ? (
+							<input
+								onChange={handleChangeText}
+								value={todoText}
+							/>
+						) : (
+							<span>{todoText}</span>
+						)}
+					</div>
+					<div className="btn-box">
+						{isEditing ? (
+							<button onClick={handleDoneEdit}>제출</button>
+						) : (
+							<button onClick={handleActiveEdit} data-testid="modify-button">
+								수정
+							</button>
+						)}
+						{isEditing ? (
+							<button onClick={handleCancelEdit}>취소</button>
+						) : (
+							<button data-testid="delete-button" onClick={handleDeleteList}>삭제</button>
+						)}
+					</div>
+				</div>
 			</label>
 		</TodoListStyle>
 	);
 };
 
 const TodoListStyle = styled.li`
-	
+	display: flex;
+	.wrap-todo{
+		display: flex;
+		.todo-list{
+			
+		}
+		.btn-box{
+			display: flex;
+			gap: 5px;
+		}
+	}
 `;
 
 export default TodoList;

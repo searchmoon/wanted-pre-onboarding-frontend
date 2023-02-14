@@ -14,11 +14,15 @@ const Home = () => {
 
 	return (
 		<HomeStyle>
-			<PlainBtn onClick={handleMoveSignIn} title={'로그인 하기'} />홈
+			<PlainBtn onClick={handleMoveSignIn} title={'로그인 하기'} />
 		</HomeStyle>
 	);
 };
 
-const HomeStyle = styled.div``;
+const HomeStyle = styled.div`
+	display: flex;
+	justify-content: center;
+	margin-top: 100px;
+`;
 
 export default Home;
