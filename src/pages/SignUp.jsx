@@ -5,7 +5,6 @@ import PlainBtn from '../components/PlainBtn';
 import axios from 'axios';
 import { useFormData } from '../hooks/useFormData';
 import { SIGN_URL } from '../common/apiUrl';
-import {centralAxiosPost} from "../utils/network";
 
 /**
  *
@@ -13,7 +12,7 @@ import {centralAxiosPost} from "../utils/network";
  */
 const SignUp = () => {
 	const navigate = useNavigate();
-	const [form, setForm, handleChange] = useFormData();
+	const [form, handleChange] = useFormData();
 
 
 	const { email, password } = form;
@@ -34,7 +33,7 @@ const SignUp = () => {
 				const response = await axios.post(`${SIGN_URL}/auth/signup`, form, {
 					headers: {'Content-Type': 'application/json'},
 				});
-				console.log('res', response);
+				console.log('response', response);
 				if (response.status === 201) {
 					alert('회원가입이 완료되었습니다.');
 					navigate('/signin');
@@ -47,7 +46,7 @@ const SignUp = () => {
 
 	return (
 		<SignUpStyle>
-			<p>회원가입 페이지</p>
+			<p className={'title'}>회원가입 페이지</p>
 			<form className={'form'}>
 				<label htmlFor={'email'}>이메일</label>
 				<input
@@ -57,6 +56,7 @@ const SignUp = () => {
 					placeholder={'email'}
 					onChange={handleChange}
 					value={email}
+					className={'basic-input'}
 				/>
 				<label htmlFor={'password'}>비밀번호</label>
 				<input
@@ -67,6 +67,7 @@ const SignUp = () => {
 					onChange={handleChange}
 					value={password}
 					minLength={8}
+					className={'basic-input'}
 				/>
 				<PlainBtn
 					onClick={handleDoneSignUp}
@@ -81,6 +82,13 @@ const SignUp = () => {
 const SignUpStyle = styled.div`
 	display: flex;
 	flex-direction: column;
+	align-items: center;
+	margin: 100px auto 0;
+	max-width: 500px;
+	.title{
+		font-size: 24px;
+		margin-bottom: 10px;
+	}
 	.form {
 		display: flex;
 		flex-direction: column;

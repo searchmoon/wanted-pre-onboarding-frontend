@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styled from '@emotion/styled';
 import axios from 'axios';
 import { SIGN_URL } from '../common/apiUrl';
-import TodoList from '../components/TodoList';
+import TodoItem from '../components/TodoItem';
 
 /**
  *
@@ -68,26 +68,28 @@ const Todo = () => {
 	},[setDataList, textInput]);
 	return (
 		<TodoStyle>
-			<form>
+			<form className={'form'}>
 				<input
 					data-testid="new-todo-input"
 					placeholder={'to-do'}
 					onChange={handleChangeTextInput}
 					value={textInput}
+					className={'basic-input'}
 				/>
 				<button
 					onClick={handleAddList}
+					className={'add-btn'}
 					data-testid="new-todo-add-button"
 				>
 					추가
 				</button>
 			</form>
 			<hr />
-			{dataList.map((item) => (
-				<ul>
-					<TodoList item={item} key={item.id} setDataList={setDataList} dataList={dataList}/>
-				</ul>
-			))}
+			<ul>
+				{dataList.map((item) => (
+					<TodoItem item={item} key={item.id} setDataList={setDataList} dataList={dataList}/>
+				))}
+			</ul>
 		</TodoStyle>
 	);
 };
@@ -95,6 +97,28 @@ const Todo = () => {
 const TodoStyle = styled.div`
 	display: flex;
 	flex-direction: column;
+	align-items: center;
+	//margin-top: 100px;
+	margin: 100px auto 0;
+	width: 100%;
+	max-width: 400px;
+	button{
+		border: none;
+		border-radius: 4px;
+	}
+	.form{
+		display: flex;
+		width: 100%;
+		gap: 10px;
+		.add-btn{
+			min-width: 50px;
+			display: inline-block;
+			height: 36px;
+			margin-top: 6px;
+			background-color: teal;
+			color: #fff;
+		}
+	}
 `;
 
 export default Todo;

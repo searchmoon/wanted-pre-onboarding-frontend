@@ -26,6 +26,14 @@ const style = css`
 		color: inherit;
 		cursor: pointer;
 	}
+	.basic-input {
+		width: 100%;
+		height: 40px;
+		border-radius: 8px;
+		border: 1px solid #bbb;
+		margin: 4px 0 20px;
+		padding: 5px 10px;
+	}
 `;
 
 const GlobalStyle = () => {

@@ -7,14 +7,15 @@ import {SIGN_URL} from "../common/apiUrl";
 /**
  *
  */
-const TodoList = ({ item, setDataList, dataList }) => {
+const TodoItem = ({ item, setDataList, dataList }) => {
 	const [isEditing, setIsEditing] = useState(false);
+	const [editableText, setEditableText] = useState(item.todo);
 	const [todoText, setTodoText] = useState(item.todo);
 	const accessToken = localStorage.getItem('access_token');
 
 	const handleChangeText = useCallback((e) => {
-		setTodoText(e.target.value);
-	}, [todoText])
+		setEditableText(e.target.value);
+	}, [editableText])
 
 	const handleActiveEdit = useCallback(() => {
 		setIsEditing(!isEditing);
@@ -23,7 +24,7 @@ const TodoList = ({ item, setDataList, dataList }) => {
 	const handleDoneEdit = useCallback(async(e) => {
 		try {
 			const response = await axios.put(`${SIGN_URL}/todos/${item.id}`, {
-					todo: todoText,
+					todo: editableText,
 					isCompleted: true,
 				}
 			,{
@@ -31,15 +32,17 @@ const TodoList = ({ item, setDataList, dataList }) => {
 					Authorization: `Bearer ${accessToken}`,
 					'Content-Type': 'application/json',
 				}
-			}).then((response) => console.log('response', response));
+			})
+				// .then((response) => console.log('response', response));
 			if (response.status === 200) {
 				console.log('데이터 수정완료');
+				setEditableText(editableText);
 			}
 		} catch {
 			console.log('데이터 update error');
 		}
 		setIsEditing(!isEditing);
-	}, [todoText, setIsEditing]);
+	}, [editableText, setIsEditing]);
 
 	const handleDeleteList = useCallback(async (e) => {
 		e.preventDefault();
@@ -61,27 +64,31 @@ const TodoList = ({ item, setDataList, dataList }) => {
 		console.log('dataList', dataList);
 		}, [setDataList]);
 
+
 	const handleCancelEdit = useCallback(() => {
-		setIsEditing(!isEditing)
-	}, [setDataList]);
+		setIsEditing(!isEditing);
+		// setEditableText(todoText);
+		setTodoText(item.todo);
+	}, [isEditing, setTodoText]);
 
 	// useEffect(() => {
 	// 	handleCalcelEdit();
 	// }, [])
 
 	return (
-		<TodoListStyle>
+		<TodoItemStyle>
 			<label>
 				<div className="wrap-todo">
 					<div className={'todo-list'}>
-						<input type="checkbox" />
+						<input type="checkbox" className={'check-box'}/>
 						{isEditing ? (
 							<input
 								onChange={handleChangeText}
-								value={todoText}
+								value={editableText}
+								className={'edit-input'}
 							/>
 						) : (
-							<span>{todoText}</span>
+							<span>{editableText}</span>
 						)}
 					</div>
 					<div className="btn-box">
@@ -100,22 +107,44 @@ const TodoList = ({ item, setDataList, dataList }) => {
 					</div>
 				</div>
 			</label>
-		</TodoListStyle>
+		</TodoItemStyle>
 	);
 };
 
-const TodoListStyle = styled.li`
+const TodoItemStyle = styled.li`
 	display: flex;
+	width: 100%;
+	max-width: 360px;
 	.wrap-todo{
 		display: flex;
+		min-width: 360px;
+		justify-content: space-between;
+		align-items: center;
+		border-bottom: 1px solid darkgrey;
+		padding: 10px 0;
 		.todo-list{
 			
+			.check-box{
+				margin-right: 6px;
+			}
+			.edit-input{
+				border: none;
+				font-size: 16px;
+				background-color: #eee;
+				padding: 5px 10px 5px 5px;
+				border-radius: 4px;
+				width: 200px;
+			}
 		}
 		.btn-box{
 			display: flex;
 			gap: 5px;
+			min-width: 92px;
+			button{
+				padding: 5px 10px;
+			}
 		}
 	}
 `;
 
-export default TodoList;
+export default TodoItem;

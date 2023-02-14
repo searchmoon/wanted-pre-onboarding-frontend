@@ -52,7 +52,7 @@ const SignIn = () => {
 
 	return (
 		<SignInStyle>
-			<p>로그인 페이지</p>
+			<p className={'title'}>로그인 페이지</p>
 			<form className={'form'}>
 				<label htmlFor={'email'}>이메일</label>
 				<input
@@ -63,7 +63,7 @@ const SignIn = () => {
 					placeholder={'email'}
 					onChange={handleChange}
 					value={email}
-					className={''}
+					className={'basic-input'}
 				/>
 				<label htmlFor={'password'}>비밀번호</label>
 				<input
@@ -75,6 +75,7 @@ const SignIn = () => {
 					onChange={handleChange}
 					value={password}
 					minLength={8}
+					className={'basic-input'}
 				/>
 				<div>
 					<PlainBtn
@@ -84,14 +85,14 @@ const SignIn = () => {
 						type={'button'}
 						disabled={!(isValidEmail && isValidPassword)}
 					/>
-					<Link
-						to={'/signup'}
-						className={'goto-signup'}
-						data-testid={'signup-button'}
-					>
-						회원가입 하기
-					</Link>
 				</div>
+				<Link
+					to={'/signup'}
+					className={'goto-signup'}
+					data-testid={'signup-button'}
+				>
+					회원가입 하기
+				</Link>
 			</form>
 		</SignInStyle>
 	);
@@ -101,13 +102,20 @@ const SignInStyle = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin-top: 100px;
+	margin: 100px auto 0;
+	max-width: 500px;
+	.title{
+		font-size: 24px;
+		margin-bottom: 10px;
+	}
 	.form {
 		display: flex;
 		flex-direction: column;
 	}
 	.goto-signup {
 		text-decoration: underline;
+		margin-top: 10px;
+		text-align: right;
 	}
 `;
 
