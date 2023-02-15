@@ -24,10 +24,10 @@ const Todo = () => {
 					Authorization: `Bearer ${accessToken}`
 				}
 			});
-				// .then((response) => setDataList(response.data));
 			if (response.status === 200) {
 				setDataList(response.data);
 				console.log('받아왔다 데이떠');
+				console.log(response);
 			}
 		} catch {
 			console.log('getTodo 통신 error');
@@ -52,15 +52,14 @@ const Todo = () => {
 				}
 			});
 			console.log('dataList :', dataList);
-
-			setDataList([
-				...dataList,
-				response.data,
-			]);
-			setTextInput('');
-
+			console.log('response data', response.data)
 			if (response.status === 201) {
 				console.log('데이떠 만들었다');
+				setDataList(prev => [
+					...prev,
+					response.data
+				]);
+				setTextInput('');
 			}
 		} catch {
 			console.log('createTodo 통신 error');
@@ -98,7 +97,6 @@ const TodoStyle = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	//margin-top: 100px;
 	margin: 100px auto 0;
 	width: 100%;
 	max-width: 400px;

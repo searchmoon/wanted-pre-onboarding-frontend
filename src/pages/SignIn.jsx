@@ -5,6 +5,7 @@ import PlainBtn from '../components/PlainBtn';
 import axios from 'axios';
 import { useFormData } from '../hooks/useFormData';
 import { SIGN_URL } from '../common/apiUrl';
+import { useValidSign } from "../hooks/useValidSign";
 
 /**
  *
@@ -12,7 +13,11 @@ import { SIGN_URL } from '../common/apiUrl';
 const SignIn = () => {
 	const navigate = useNavigate();
 
-	const [form, handleChange, isValid] = useFormData();
+	const [form, handleChange] = useFormData({
+		email: '',
+		password: '',
+	});
+	const isValid = useValidSign(form);
 
 
 	useEffect(() => {
@@ -23,7 +28,6 @@ const SignIn = () => {
 
 	const handleDoneSignIn = useCallback(
 		async (e) => {
-			alert('서브밋 버튼 눌림');
 			e.preventDefault();
 			try {
 				console.log('form : ', form);
@@ -38,7 +42,7 @@ const SignIn = () => {
 				}
 				if (response.status === 200) {
 					navigate('/todo');
-					console.log('로그인이 완료되었습니다.')
+					alert('로그인이 완료되었습니다.')
 				}
 			} catch {
 				console.log('통신 error');

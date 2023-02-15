@@ -7,18 +7,16 @@ import {useCallback, useMemo, useState} from 'react';
  * @param setForm
  * @returns {(function(*): void)|*}
  */
-export const useFormData = () => {
+export const useFormData = (initialValue) => {
 
-	const [form, setForm] = useState({
-		email: '',
-		password: '',
-	});
+	const [form, setForm] = useState(initialValue);
 
 	const handleChange = useCallback(
 		(e) => {
+			const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
 			const nextForm = {
 				...form,
-				[e.target.name]: e.target.value,
+				[e.target.name]: value,
 			};
 			setForm(nextForm);
 		},
@@ -26,11 +24,6 @@ export const useFormData = () => {
 	);
 
 
-	const isValid = useMemo(()=>{
-		const isValidEmail = form.email.includes('@');
-		const isValidPassword = form.password.length >= 8;
-		return (isValidEmail && isValidPassword)
-	}, [form.email, form.password]);
 
-	return [form, handleChange, isValid];
+	return [form, handleChange, setForm];
 };

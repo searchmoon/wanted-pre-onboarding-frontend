@@ -3,29 +3,31 @@ import React, {useCallback, useEffect} from 'react';
 import { useState } from 'react';
 import axios from "axios";
 import {SIGN_URL} from "../common/apiUrl";
+import {useFormData} from "../hooks/useFormData";
 
 /**
  *
  */
 const TodoItem = ({ item, setDataList, dataList }) => {
 	const [isEditing, setIsEditing] = useState(false);
-	const [editableText, setEditableText] = useState(item.todo);
-	const [todoText, setTodoText] = useState(item.todo);
+	const [tempText, setTempText] = useState(item.todo);
 	const accessToken = localStorage.getItem('access_token');
 
-	const handleChangeText = useCallback((e) => {
-		setEditableText(e.target.value);
-	}, [editableText])
+	const [form, handleChange, setForm] = useFormData({
+		todo: item.todo,
+		isCompleted: item.isCompleted
+	});
 
 	const handleActiveEdit = useCallback(() => {
-		setIsEditing(!isEditing);
-	}, []);
+		setTempText(form.todo);
+		setIsEditing(prev => !prev);
+	}, [form.todo]);
 
 	const handleDoneEdit = useCallback(async(e) => {
 		try {
 			const response = await axios.put(`${SIGN_URL}/todos/${item.id}`, {
-					todo: editableText,
-					isCompleted: true,
+					todo: form.todo,
+					isCompleted: form.isCompleted,
 				}
 			,{
 				headers: {
@@ -33,16 +35,17 @@ const TodoItem = ({ item, setDataList, dataList }) => {
 					'Content-Type': 'application/json',
 				}
 			})
-				// .then((response) => console.log('response', response));
+
 			if (response.status === 200) {
 				console.log('데이터 수정완료');
-				setEditableText(editableText);
+				console.log('res', response);
+				setIsEditing(prev => !prev);
 			}
 		} catch {
 			console.log('데이터 update error');
 		}
-		setIsEditing(!isEditing);
-	}, [editableText, setIsEditing]);
+
+	}, [form.todo, form.isCompleted, setIsEditing]);
 
 	const handleDeleteList = useCallback(async (e) => {
 		e.preventDefault();
@@ -53,54 +56,64 @@ const TodoItem = ({ item, setDataList, dataList }) => {
 						Authorization: `Bearer ${accessToken}`,
 						'Content-Type': 'application/json',
 					}
-				}).then((response) => console.log('response', response));
+				});
+			console.log('ddd',response.status);
 			if (response.status === 204) {
 				console.log('데이터 삭제완료');
 				alert('todo가 삭제 되었습니다.');
+				window.location.reload();
 			}
 		} catch {
 			console.log('데이터 delete error');
 		}
 		console.log('dataList', dataList);
-		}, [setDataList]);
+		}, [dataList, setDataList]);
+
+	// useEffect(() => {
+	// 	setDataList(dataList);
+	// 	console.log('dataList', dataList)
+	// }, [dataList])
 
 
 	const handleCancelEdit = useCallback(() => {
 		setIsEditing(!isEditing);
-		// setEditableText(todoText);
-		setTodoText(item.todo);
-	}, [isEditing, setTodoText]);
-
-	// useEffect(() => {
-	// 	handleCalcelEdit();
-	// }, [])
+		setForm(prev => ({
+			...prev,
+				todo: tempText
+		}));
+	}, [isEditing, tempText]);
 
 	return (
 		<TodoItemStyle>
 			<label>
 				<div className="wrap-todo">
 					<div className={'todo-list'}>
-						<input type="checkbox" className={'check-box'}/>
+						<input type="checkbox" className={'check-box'}
+									 name={'isCompleted'}
+									 disabled={!isEditing}
+									 checked={form.isCompleted} onChange={handleChange} />
 						{isEditing ? (
 							<input
-								onChange={handleChangeText}
-								value={editableText}
+								onChange={handleChange}
+								value={form.todo}
+								name={'todo'}
 								className={'edit-input'}
+								data-testid="modify-input"
 							/>
 						) : (
-							<span>{editableText}</span>
+							<span>{form.todo}</span>
 						)}
 					</div>
 					<div className="btn-box">
 						{isEditing ? (
-							<button onClick={handleDoneEdit}>제출</button>
+							<button onClick={handleDoneEdit} data-testid="submit-button">제출</button>
 						) : (
 							<button onClick={handleActiveEdit} data-testid="modify-button">
 								수정
 							</button>
 						)}
 						{isEditing ? (
-							<button onClick={handleCancelEdit}>취소</button>
+							<button onClick={handleCancelEdit} data-testid="cancel-button">취소</button>
 						) : (
 							<button data-testid="delete-button" onClick={handleDeleteList}>삭제</button>
 						)}
@@ -123,7 +136,7 @@ const TodoItemStyle = styled.li`
 		border-bottom: 1px solid darkgrey;
 		padding: 10px 0;
 		.todo-list{
-			
+
 			.check-box{
 				margin-right: 6px;
 			}

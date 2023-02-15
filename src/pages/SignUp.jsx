@@ -5,6 +5,7 @@ import PlainBtn from '../components/PlainBtn';
 import axios from 'axios';
 import { useFormData } from '../hooks/useFormData';
 import { SIGN_URL } from '../common/apiUrl';
+import {useValidSign} from "../hooks/useValidSign";
 
 /**
  *
@@ -12,7 +13,12 @@ import { SIGN_URL } from '../common/apiUrl';
  */
 const SignUp = () => {
 	const navigate = useNavigate();
-	const [form, handleChange, isValid] = useFormData();
+	const [form, handleChange] = useFormData({
+		email: '',
+		password: '',
+	});
+	const isValid = useValidSign(form);
+
 
 	useEffect(() => {
 		if (localStorage.getItem('access_token')) {
