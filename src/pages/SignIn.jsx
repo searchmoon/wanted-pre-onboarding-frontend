@@ -30,22 +30,21 @@ const SignIn = () => {
 		async (e) => {
 			e.preventDefault();
 			try {
-				console.log('form : ', form);
 				const response = await axios.post(`${SIGN_URL}/auth/signin`, form, {
 					headers: {
 						'Content-Type': 'application/json',
 					},
 				});
-				console.log('response :' , response);
 				if (response.data.access_token) {
 					localStorage.setItem('access_token', response.data.access_token);
 				}
 				if (response.status === 200) {
 					navigate('/todo');
+					console.log('로그인 완료');
 					alert('로그인이 완료되었습니다.')
 				}
 			} catch {
-				console.log('통신 error');
+				console.log('로그인 통신 error');
 			}
 		},
 		[form],

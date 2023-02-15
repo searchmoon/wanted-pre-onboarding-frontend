@@ -9,7 +9,6 @@ import {useValidSign} from "../hooks/useValidSign";
 
 /**
  *
-
  */
 const SignUp = () => {
 	const navigate = useNavigate();
@@ -33,7 +32,6 @@ const SignUp = () => {
 				const response = await axios.post(`${SIGN_URL}/auth/signup`, form, {
 					headers: {'Content-Type': 'application/json'},
 				});
-				console.log('response', response);
 				if (response.status === 201) {
 					alert('회원가입이 완료되었습니다.');
 					navigate('/signin');

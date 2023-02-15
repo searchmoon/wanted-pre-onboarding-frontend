@@ -38,7 +38,6 @@ const TodoItem = ({ item, setDataList, dataList }) => {
 
 			if (response.status === 200) {
 				console.log('데이터 수정완료');
-				console.log('res', response);
 				setIsEditing(prev => !prev);
 			}
 		} catch {
@@ -57,23 +56,15 @@ const TodoItem = ({ item, setDataList, dataList }) => {
 						'Content-Type': 'application/json',
 					}
 				});
-			console.log('ddd',response.status);
 			if (response.status === 204) {
 				console.log('데이터 삭제완료');
-				alert('todo가 삭제 되었습니다.');
+				alert('todo 목록이 삭제 되었습니다.');
 				window.location.reload();
 			}
 		} catch {
 			console.log('데이터 delete error');
 		}
-		console.log('dataList', dataList);
 		}, [dataList, setDataList]);
-
-	// useEffect(() => {
-	// 	setDataList(dataList);
-	// 	console.log('dataList', dataList)
-	// }, [dataList])
-
 
 	const handleCancelEdit = useCallback(() => {
 		setIsEditing(!isEditing);
@@ -90,7 +81,6 @@ const TodoItem = ({ item, setDataList, dataList }) => {
 					<div className={'todo-list'}>
 						<input type="checkbox" className={'check-box'}
 									 name={'isCompleted'}
-									 disabled={!isEditing}
 									 checked={form.isCompleted} onChange={handleChange} />
 						{isEditing ? (
 							<input

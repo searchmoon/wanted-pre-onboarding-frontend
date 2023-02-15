@@ -10,6 +10,6 @@ export const centralAxiosPost = async (url, data) => {
             },
         });
     } catch {
-        console.log('통신 error');
+        console.log('axios 통신 error');
     }
 }

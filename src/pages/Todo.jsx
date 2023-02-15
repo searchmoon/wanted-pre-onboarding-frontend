@@ -26,8 +26,7 @@ const Todo = () => {
 			});
 			if (response.status === 200) {
 				setDataList(response.data);
-				console.log('받아왔다 데이떠');
-				console.log(response);
+				console.log('get data 완료');
 			}
 		} catch {
 			console.log('getTodo 통신 error');
@@ -51,10 +50,8 @@ const Todo = () => {
 					'Content-Type': 'application/json',
 				}
 			});
-			console.log('dataList :', dataList);
-			console.log('response data', response.data)
 			if (response.status === 201) {
-				console.log('데이떠 만들었다');
+				console.log('data update 완료');
 				setDataList(prev => [
 					...prev,
 					response.data
